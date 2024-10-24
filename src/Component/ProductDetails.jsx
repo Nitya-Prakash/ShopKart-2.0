@@ -1,31 +1,43 @@
 import axios from '../utils/Axios'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import Loading from './Loading'
+import { ProductContext } from '../utils/Context'
 
 const ProductDetails = () => {
+    const [products, setProducts] = useContext(ProductContext);
     const [singleProduct, setSingleProduct] = useState(null)
 
     const { id } = useParams();
     // console.log(id)
 
-    const getSingleProducts = async () => {
-        try {
-            const { data } = await axios.get(`/products/${id}`)
-            setSingleProduct(data)
-            // console.log(data)
-        } catch (error) {
-            console.log(error)
-        }
-    }
+    // const getSingleProducts = async () => {
+    //     try {
+    //         const { data } = await axios.get(`/products/${id}`)
+    //         setSingleProduct(data)
+    //         // console.log(data)
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
 
     useEffect(() => {
-        getSingleProducts();
+        if (!singleProduct) {
+            setSingleProduct(products.filter(prod => prod.id == id)[0])
+        }
+        // getSingleProducts();
     }, [])
 
     const navigate = useNavigate();
     const goBackHandler = () => {
         navigate(-1);
+    }
+
+    const productDeleteHandler = (id) => {
+        const filteredProducts = products.filter(p => p.id !== id);
+        setProducts(products);
+        localStorage.setItem("products", JSON.stringify(filteredProducts));
+        navigate("/")
     }
 
     return singleProduct ? (
@@ -40,7 +52,7 @@ const ProductDetails = () => {
                     <button onClick={goBackHandler} className='px-5 py-2 border border-black rounded-md text-black'>Back</button>
                     <div className='flex gap-3 items-center'>
                         <Link className='px-5 py-2 border border-blue-400 rounded-md text-blue-400'>Edit</Link>
-                        <Link className='px-5 py-2 border border-red-400 rounded-md text-red-400'>Delete</Link>
+                        <button onClick={() => productDeleteHandler(singleProduct.id)} className='px-5 py-2 border border-red-400 rounded-md text-red-400'>Delete</button>
                     </div>
                 </div>
             </div>
