@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import Loading from './Loading'
 import { ProductContext } from '../utils/Context'
+import { toast } from 'react-toastify'
 
 const ProductDetails = () => {
     const [products, setProducts] = useContext(ProductContext);
@@ -37,6 +38,7 @@ const ProductDetails = () => {
         const filteredProducts = products.filter(p => p.id !== id);
         setProducts(products);
         localStorage.setItem("products", JSON.stringify(filteredProducts));
+        toast.success("Product Deleted Succesfully !")
         navigate("/")
     }
 
@@ -51,12 +53,12 @@ const ProductDetails = () => {
                 <div className='mt-5 flex items-center justify-between gap-5'>
                     <button onClick={goBackHandler} className='px-5 py-2 border border-black rounded-md text-black'>Back</button>
                     <div className='flex gap-3 items-center'>
-                        <Link className='px-5 py-2 border border-blue-400 rounded-md text-blue-400'>Edit</Link>
+                        <Link to={`/edit/${singleProduct.id}`} className='px-5 py-2 border border-blue-400 rounded-md text-blue-400'>Edit</Link>
                         <button onClick={() => productDeleteHandler(singleProduct.id)} className='px-5 py-2 border border-red-400 rounded-md text-red-400'>Delete</button>
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     ) : <Loading />
 }
 
