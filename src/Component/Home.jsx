@@ -45,7 +45,7 @@ const Home = () => {
 
             </div>
         </>
-    ) : <Loading />
+    ) : null
 }
 
 export default Home
